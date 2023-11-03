@@ -88,3 +88,24 @@ it("order by order from child to parent", () => {
 
     expect(output.toString()).toBe("order by child asc, parent asc");
 });
+
+it("readme case", () => {
+    const output = jql({ left: "summary", sign: "=", right: "nice" })
+        .and({
+            left: "summary",
+            sign: "!=",
+            right: "look mom, im cool",
+        })
+        .or(
+            jql({ left: "foo", sign: "in", right: [1, 2, 3] }).and({
+                left: "bar",
+                sign: "!=",
+                right: 2,
+            })
+        )
+        .orderBy({ field: "issuekey", type: "asc" });
+
+    expect(output.toString()).toBe(
+        "((summary = 'nice') and (summary != 'look mom, im cool') or ((foo in (1,2,3)) and (bar != 2))) order by issuekey asc"
+    );
+});
