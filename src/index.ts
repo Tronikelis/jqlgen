@@ -87,6 +87,8 @@ export class JqlGen {
         orderBy
             ?.split(",")
             .map(x => x.trim())
+            // don't touch order by order on external sql
+            .reverse()
             .forEach(by => {
                 const bySpace = by.split(" ").filter(x => !!x);
                 this.orderBy({
@@ -183,6 +185,7 @@ export class JqlGen {
         const withoutDupes = this.orderByOperators.filter(
             (a, i) => this.orderByOperators.findLastIndex(b => a.field === b.field) === i
         );
+        withoutDupes.reverse();
 
         if (withoutDupes.length === 0) return "";
 

@@ -62,7 +62,9 @@ jql({ left: "a", sign: "=", right: "b" }).orderBy({ field: "summary", type: "asc
 ## A note about order by
 
 You can call order by at any level, it gets resolved like this:
-`final string output: [child-child-parent] asc/desc, [child-parent] asc/desc, [parent] asc/desc`
+`final string output: [parent] asc/desc, [child-parent] asc/desc, [child-child-parent] asc/desc`
+
+It's not the other way around, because jql sorts the first field the last, I will try to maintain sql behavior so I am reversing it
 
 An example
 
@@ -71,7 +73,7 @@ const output = jql()
     .and(jql().orderBy({ field: "child", type: "asc" }))
     .orderBy({ field: "parent", type: "asc" });
 
-expect(output.toString()).toBe("order by child asc, parent asc");
+expect(output.toString()).toBe("order by parent asc, child asc");
 ```
 
 ## API
@@ -147,7 +149,7 @@ const output = jql({
     )
     .toString();
 
-// ((c < 'd') and ((e ~ 'f') or ((g > 'h') and ((i = 'j') or ((k != 'l') and ((m is not 'n') or ((o in ('p','q','r')) and ((s not in ('t','u','v')) or ((w !~ 'x') and ((y was 'z') or ((aa was in 'bb') and (cc was not in 'dd')))))))))))) order by one desc, two asc, three desc
+// ((c < 'd') and ((e ~ 'f') or ((g > 'h') and ((i = 'j') or ((k != 'l') and ((m is not 'n') or ((o in ('p','q','r')) and ((s not in ('t','u','v')) or ((w !~ 'x') and ((y was 'z') or ((aa was in 'bb') and (cc was not in 'dd')))))))))))) order by three desc, two asc, one desc
 ```
 
 Of course, your app should dynamically generate this stuff

@@ -60,7 +60,7 @@ it("simple order by double", () => {
             type: "desc",
         });
 
-    expect(output.toString()).toBe("(a = 'b') order by summary asc, issuekey desc");
+    expect(output.toString()).toBe("(a = 'b') order by issuekey desc, summary asc");
 });
 
 it("inject external jql gets anded with the base query", () => {
@@ -84,9 +84,9 @@ it("order by gets forwarded to parents", () => {
 it("order by gets forwarded to parents, simple", () => {
     const output = jql()
         .orderBy({ field: "parent", type: "asc" })
-        .and(jql().orderBy({ field: "child", type: "desc" }));
+        .and(jql().orderBy({ field: "child", type: "asc" }));
 
-    expect(output.toString()).toBe("order by child desc, parent asc");
+    expect(output.toString()).toBe("order by parent asc, child asc");
 });
 
 it("order by order from child to parent", () => {
@@ -94,7 +94,7 @@ it("order by order from child to parent", () => {
         .and(jql().orderBy({ field: "child", type: "asc" }))
         .orderBy({ field: "parent", type: "asc" });
 
-    expect(output.toString()).toBe("order by child asc, parent asc");
+    expect(output.toString()).toBe("order by parent asc, child asc");
 });
 
 it("order by duplicate field names are overriden by parent", () => {
@@ -108,6 +108,26 @@ it("order by duplicate field names are overriden by parent", () => {
         .orderBy({ field: "x", type: "desc" });
 
     expect(output.toString()).toBe("order by x desc");
+});
+
+it("order by with injected jql", () => {
+    const output = jql()
+        .and(
+            jql()
+                .injectExternal("a=a order by a asc, b asc")
+                .and(jql().injectExternal("order by aa asc, bb asc"))
+        )
+        .orderBy({ field: "c", type: "asc" })
+        .orderBy({ field: "d", type: "asc" });
+
+    expect(output.toString()).toBe(
+        "((a=a)) order by d asc, c asc, a asc, b asc, aa asc, bb asc"
+    );
+});
+
+it("[injectExternal] order by gets extracted correctly", () => {
+    const output = jql().injectExternal("order by    a    asc    ,   b   desc");
+    expect(output.toString()).toBe("order by a asc, b desc");
 });
 
 it("readme case", () => {
@@ -183,6 +203,6 @@ it("beast mode example", () => {
     );
 
     expect(output.toString()).toBe(
-        "((c < 'd') and ((e ~ 'f') or ((g > 'h') and ((i = 'j') or ((k != 'l') and ((m is not 'n') or ((o in ('p','q','r')) and ((s not in ('t','u','v')) or ((w !~ 'x') and ((y was 'z') or ((aa was in 'bb') and (cc was not in 'dd')))))))))))) order by one desc, two asc, three desc"
+        "((c < 'd') and ((e ~ 'f') or ((g > 'h') and ((i = 'j') or ((k != 'l') and ((m is not 'n') or ((o in ('p','q','r')) and ((s not in ('t','u','v')) or ((w !~ 'x') and ((y was 'z') or ((aa was in 'bb') and (cc was not in 'dd')))))))))))) order by three desc, two asc, one desc"
     );
 });
