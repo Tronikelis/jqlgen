@@ -130,6 +130,44 @@ it("[injectExternal] order by gets extracted correctly", () => {
     expect(output.toString()).toBe("order by a asc, b desc");
 });
 
+it("[injectExternal] order by correct order override full", () => {
+    const output = jql()
+        .and(jql().injectExternal("order by a asc, b desc"))
+        .orderBy({
+            field: "a",
+            type: "asc",
+        })
+        .orderBy({
+            field: "b",
+            type: "asc",
+        });
+
+    expect(output.toString()).toBe("order by b asc, a asc");
+});
+
+it("[injectExternal] order by correct order override half", () => {
+    const output = jql()
+        .and(jql().injectExternal("order by a asc, b asc, c asc, d asc"))
+        .orderBy({
+            field: "a",
+            type: "asc",
+        })
+        .orderBy({
+            field: "b",
+            type: "asc",
+        });
+
+    expect(output.toString()).toBe("order by b asc, a asc, c asc, d asc");
+});
+
+it("[injectExternal] order by correct order only external", () => {
+    const output = jql()
+        .and(jql().injectExternal("order by a asc, b asc, c asc, d asc"))
+        .injectExternal("order by xd asc, b asc, c asc ");
+
+    expect(output.toString()).toBe("order by xd asc, b asc, c asc, a asc, d asc");
+});
+
 it("readme case", () => {
     const output = jql({ left: "summary", sign: "=", right: "nice" })
         .and({

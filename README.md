@@ -16,7 +16,14 @@ When string interpolation jql is not enough, yes I have this problem
 
 ## The goal
 
-Make it impossible to generate invalid jql with a simple api
+Make it impossible to generate invalid jql with a simple yet complex api
+
+## Features
+
+- ✔️ Simple
+- 🧪 Well tested (I use this myself in my semi big projects)
+- 👌 Follows SQL order by priority [info](#a-note-about-order-by)
+- 🤘 Impossible to generate invalid JQL (please open an issue if you found an edge-case)
 
 ## Quick start 🧙
 
