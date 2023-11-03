@@ -105,9 +105,7 @@ export class JqlGen {
     }
 
     private forwardOrderBy(from: JqlGen): void {
-        if (from.orderByOperators.length > 0 && this.orderByOperators.length === 0) {
-            this.orderByOperators = from.orderByOperators;
-        }
+        this.orderByOperators.unshift(...from.orderByOperators);
     }
 
     private toStringStatement(): string | undefined {
@@ -182,13 +180,17 @@ export class JqlGen {
     }
 
     private toStringOrderBy(): string {
-        if (this.orderByOperators.length === 0) return "";
+        const withoutDupes = this.orderByOperators.filter(
+            (a, i) => this.orderByOperators.findLastIndex(b => a.field === b.field) === i
+        );
+
+        if (withoutDupes.length === 0) return "";
 
         const toString = (item: OrderByOperator) => [item.field, item.type].join(" ");
-        let str = ["order by", toString(this.orderByOperators[0]!)].join(" ");
+        let str = ["order by", toString(withoutDupes[0]!)].join(" ");
 
-        for (let i = 1; i < this.orderByOperators.length; i++) {
-            str += `, ${toString(this.orderByOperators[i]!)}`;
+        for (let i = 1; i < withoutDupes.length; i++) {
+            str += `, ${toString(withoutDupes[i]!)}`;
         }
 
         return str;

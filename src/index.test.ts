@@ -81,12 +81,33 @@ it("order by gets forwarded to parents", () => {
     expect(outputDeep.toString()).toBe("order by a asc");
 });
 
+it("order by gets forwarded to parents, simple", () => {
+    const output = jql()
+        .orderBy({ field: "parent", type: "asc" })
+        .and(jql().orderBy({ field: "child", type: "desc" }));
+
+    expect(output.toString()).toBe("order by child desc, parent asc");
+});
+
 it("order by order from child to parent", () => {
     const output = jql()
         .and(jql().orderBy({ field: "child", type: "asc" }))
         .orderBy({ field: "parent", type: "asc" });
 
     expect(output.toString()).toBe("order by child asc, parent asc");
+});
+
+it("order by duplicate field names are overriden by parent", () => {
+    const output = jql()
+        .and(
+            jql()
+                .orderBy({ field: "x", type: "asc" })
+                .orderBy({ field: "x", type: "asc" })
+                .and(jql().orderBy({ field: "x", type: "asc" }))
+        )
+        .orderBy({ field: "x", type: "desc" });
+
+    expect(output.toString()).toBe("order by x desc");
 });
 
 it("readme case", () => {
