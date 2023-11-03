@@ -36,7 +36,8 @@ jql({ left: "summary", sign: "=", right: "nice" })
             right: 2,
         })
     )
-    .orderBy({ field: "issuekey", type: "asc" });
+    .orderBy({ field: "issuekey", type: "asc" })
+    .toString();
 
 // ((summary = 'nice') and (summary != 'look mom, im cool') or ((foo in (1,2,3)) and (bar != 2))) order by issuekey asc
 ```
