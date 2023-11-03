@@ -1,6 +1,6 @@
 {
     "name": "jqlgen",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A better way to generate jql",
     "type": "module",
     "main": "./dist/index.cjs",
