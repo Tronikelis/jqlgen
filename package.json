@@ -45,6 +45,7 @@
     },
     "scripts": {
         "build": "tsup",
-        "test": "jest"
+        "test": "jest",
+        "prepublishOnly": "npm run test && npm run build"
     }
 }
