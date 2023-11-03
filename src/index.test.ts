@@ -109,3 +109,59 @@ it("readme case", () => {
         "((summary = 'nice') and (summary != 'look mom, im cool') or ((foo in (1,2,3)) and (bar != 2))) order by issuekey asc"
     );
 });
+
+it("beast mode example", () => {
+    const output = jql({
+        left: "c",
+        sign: "<",
+        right: "d",
+    }).and(
+        jql({ left: "e", sign: "~", right: "f" }).or(
+            jql({ left: "g", sign: ">", right: "h" })
+                .and(
+                    jql({ left: "i", sign: "=", right: "j" }).or(
+                        jql({ left: "k", sign: "!=", right: "l" }).and(
+                            jql({ left: "m", sign: "is not", right: "n" }).or(
+                                jql({ left: "o", sign: "in", right: ["p", "q", "r"] })
+                                    .and(
+                                        jql({
+                                            left: "s",
+                                            sign: "not in",
+                                            right: ["t", "u", "v"],
+                                        }).or(
+                                            jql({ left: "w", sign: "!~", right: "x" }).and(
+                                                jql({ left: "y", sign: "was", right: "z" }).or(
+                                                    jql({
+                                                        left: "aa",
+                                                        sign: "was in",
+                                                        right: "bb",
+                                                    }).and(
+                                                        jql({
+                                                            left: "cc",
+                                                            sign: "was not in",
+                                                            right: "dd",
+                                                        }).orderBy({
+                                                            field: "one",
+                                                            type: "desc",
+                                                        })
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                    .orderBy({
+                                        field: "two",
+                                        type: "asc",
+                                    })
+                            )
+                        )
+                    )
+                )
+                .orderBy({ field: "three", type: "desc" })
+        )
+    );
+
+    expect(output.toString()).toBe(
+        "((c < 'd') and ((e ~ 'f') or ((g > 'h') and ((i = 'j') or ((k != 'l') and ((m is not 'n') or ((o in ('p','q','r')) and ((s not in ('t','u','v')) or ((w !~ 'x') and ((y was 'z') or ((aa was in 'bb') and (cc was not in 'dd')))))))))))) order by one desc, two asc, three desc"
+    );
+});
