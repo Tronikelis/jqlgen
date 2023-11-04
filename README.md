@@ -99,9 +99,9 @@ declare class JqlGen {
 declare function jql(statement?: JqlStatement): JqlGen;
 ```
 
-## Turn on beast mode with this library 😈
+## Nest as much as you want
 
-Yeees, I can finally go wild with jql
+Yes, you can go wild like this
 
 ```ts
 const output = jql({
