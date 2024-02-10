@@ -6,6 +6,7 @@ export type Sign =
     | ">="
     | "!="
     | "is not"
+    | "is"
     | "~"
     | "in"
     | "not in"
@@ -121,7 +122,8 @@ export class JqlGen {
         if (
             typeof this.statement.right === "number" ||
             (typeof this.statement.right === "string" &&
-                this.statement.right.toLowerCase() === "empty")
+                (this.statement.right.toLowerCase() === "empty" ||
+                    this.statement.right.toLowerCase() === "null"))
         ) {
             right = this.statement.right.toString();
         } else if (Array.isArray(this.statement.right)) {

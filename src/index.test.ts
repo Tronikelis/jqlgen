@@ -244,3 +244,9 @@ it("beast mode example", () => {
         "((c < 'd') and ((e ~ 'f') or ((g > 'h') and ((i = 'j') or ((k != 'l') and ((m is not 'n') or ((o in ('p','q','r')) and ((s not in ('t','u','v')) or ((w !~ 'x') and ((y was 'z') or ((aa was in 'bb') and (cc was not in 'dd')))))))))))) order by three desc, two asc, one desc"
     );
 });
+
+it.each(["empty", "null"] as const)("does not escape %s", arg => {
+    const output = jql({ left: "foo", sign: "is", right: arg }).toString();
+
+    expect(output).toBe(`(foo is ${arg})`);
+});
