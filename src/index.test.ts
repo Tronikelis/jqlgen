@@ -250,3 +250,9 @@ it.each(["empty", "null"] as const)("does not escape %s", arg => {
 
     expect(output).toBe(`(foo is ${arg})`);
 });
+
+it("escapes single quotes", () => {
+    const output = jql({ left: "foo", sign: "=", right: "foo 'bar'" }).toString();
+
+    expect(output).toBe(`(foo = 'foo \\'bar\\'')`);
+});

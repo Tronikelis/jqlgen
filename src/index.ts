@@ -107,6 +107,18 @@ export class JqlGen {
         return [base, orderBy].join(" ").trim();
     }
 
+    private escapeStatement(value: string | number): string {
+        if (typeof value === "number") {
+            return value.toString();
+        }
+
+        if (value.toLowerCase() === "empty" || value.toLowerCase() === "null") {
+            return value;
+        }
+
+        return `'${value.replaceAll("'", "\\'")}'`;
+    }
+
     private forwardOrderBy(from: JqlGen): void {
         this.orderByOperators.unshift(...from.orderByOperators);
     }
@@ -119,21 +131,13 @@ export class JqlGen {
         }
 
         let right: string = "";
-        if (
-            typeof this.statement.right === "number" ||
-            (typeof this.statement.right === "string" &&
-                (this.statement.right.toLowerCase() === "empty" ||
-                    this.statement.right.toLowerCase() === "null"))
-        ) {
-            right = this.statement.right.toString();
-        } else if (Array.isArray(this.statement.right)) {
+
+        if (Array.isArray(this.statement.right)) {
             right = "(";
-            right += this.statement.right
-                .map(x => (typeof x === "number" ? x : `'${x}'`))
-                .join(",");
+            right += this.statement.right.map(x => this.escapeStatement(x)).join(",");
             right += ")";
         } else {
-            right = `'${this.statement.right}'`;
+            right = this.escapeStatement(this.statement.right);
         }
 
         let str = "(";
