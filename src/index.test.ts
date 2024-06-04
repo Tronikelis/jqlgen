@@ -258,7 +258,11 @@ it("escapes single quotes", () => {
 });
 
 it("escapes backslash", () => {
-    const output = jql({ left: "foo", sign: "=", right: "foo\\" }).toString();
+    let output = jql({ left: "foo", sign: "=", right: "foo\\" }).toString();
 
     expect(output).toBe("(foo = 'foo\\\\')");
+
+    output = jql({ left: "x", sign: "=", right: "\\\\" }).toString();
+
+    expect(output).toBe("(x = '\\\\\\\\')");
 });
