@@ -1,4 +1,4 @@
-import { expect, it } from "@jest/globals";
+import { expect, it } from "vitest";
 
 import { jql, JqlGen } from "./index";
 
@@ -97,7 +97,7 @@ it("order by order from child to parent", () => {
     expect(output.toString()).toBe("order by parent asc, child asc");
 });
 
-it("order by duplicate field names are overriden by parent", () => {
+it("order by duplicate field names are overridden by parent", () => {
     const output = jql()
         .and(
             jql()
