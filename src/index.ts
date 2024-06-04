@@ -116,7 +116,12 @@ export class JqlGen {
             return value;
         }
 
-        return `'${value.replaceAll("'", "\\'")}'`;
+        // nice
+        value = value.replaceAll("\\", "\\\\");
+
+        value = value.replaceAll("'", "\\'");
+
+        return `'${value}'`;
     }
 
     private forwardOrderBy(from: JqlGen): void {
