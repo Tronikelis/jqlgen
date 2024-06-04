@@ -256,3 +256,13 @@ it("escapes single quotes", () => {
 
     expect(output).toBe(`(foo = 'foo \\'bar\\'')`);
 });
+
+it("escapes backslash", () => {
+    let output = jql({ left: "foo", sign: "=", right: "foo\\" }).toString();
+
+    expect(output).toBe("(foo = 'foo\\\\')");
+
+    output = jql({ left: "x", sign: "=", right: "\\\\" }).toString();
+
+    expect(output).toBe("(x = '\\\\\\\\')");
+});
